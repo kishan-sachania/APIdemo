@@ -18,7 +18,8 @@ namespace APIdemo1.DAL
                 using (IDataReader reader = sqldatabase.ExecuteReader(dbCommand)) { 
                     while(reader.Read())            
                     {
-                        UserModel userModelS= new UserModel();  
+                        UserModel userModelS= new UserModel();
+                        userModelS.PersonID = Convert.ToInt32(reader["PersonID"]);
                         userModelS.Name = reader["Name"].ToString();
                         userModelS.Contact = reader["Contect"].ToString();
                         userModelS.Email = reader["Email"].ToString();
@@ -48,7 +49,7 @@ namespace APIdemo1.DAL
                     {
                         userModel.PersonID = Convert.ToInt32(dr["PersonID"].ToString());
                         userModel.Name = dr["Name"].ToString();
-                        userModel.Contact = dr["Contact"].ToString();
+                        userModel.Contact = dr["Contect"].ToString();
                         userModel.Email = dr["Email"].ToString();
                     }
                 }
@@ -64,16 +65,16 @@ namespace APIdemo1.DAL
             }
         }
 
-        public bool DeleteById(int userid)
+        public bool DeleteById(int PersonID)
         {
 
             try
             {
                 SqlDatabase sqldatabase = new SqlDatabase(ConString);
-                DbCommand dbCommand = sqldatabase.GetSqlStringCommand("PR_DELETE_USER");
-                sqldatabase.AddInParameter(dbCommand, "@PersonID", SqlDbType.Int, userid);
+                DbCommand dbCommand = sqldatabase.GetStoredProcCommand("PR_DELETE_USER");
+                sqldatabase.AddInParameter(dbCommand, "@PersonID", SqlDbType.Int, PersonID);
 
-                if (Convert.ToBoolean(dbCommand.ExecuteNonQuery()))
+                if (Convert.ToBoolean(sqldatabase.ExecuteNonQuery(dbCommand)))
                 {
                     return true;
 
@@ -90,5 +91,60 @@ namespace APIdemo1.DAL
             }
 
         }
+
+        public bool API_PR_INSERT_USER(UserModel userModel)
+        {
+            try
+            {
+
+                SqlDatabase sqlDatabase = new SqlDatabase(ConString);
+                DbCommand dbCommand = sqlDatabase.GetStoredProcCommand("PR_INSERT_USER");
+                sqlDatabase.AddInParameter(dbCommand, "@Name", SqlDbType.VarChar, userModel.Name);
+                sqlDatabase.AddInParameter(dbCommand, "@Email", SqlDbType.VarChar, userModel.Email);
+                sqlDatabase.AddInParameter(dbCommand, "@Contect", SqlDbType.VarChar, userModel.Contact);
+                UserModel personModel = new UserModel();
+                if (Convert.ToBoolean(sqlDatabase.ExecuteNonQuery(dbCommand)))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool API_Person_Update(UserModel userModel)
+        {
+            try
+            {
+                SqlDatabase sqldb = new SqlDatabase(ConString);
+                DbCommand cmd = sqldb.GetStoredProcCommand("PR_UPDATE_USER");
+                sqldb.AddInParameter(cmd, "@Person", SqlDbType.Int, userModel.PersonID);
+                sqldb.AddInParameter(cmd, "@Name", SqlDbType.VarChar, userModel.Name);
+                sqldb.AddInParameter(cmd, "@Contect", SqlDbType.VarChar, userModel.Contact);
+                sqldb.AddInParameter(cmd, "@Email", SqlDbType.VarChar, userModel.Email);
+
+                if (Convert.ToBoolean(sqldb.ExecuteNonQuery(cmd)))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
+
     }
 }

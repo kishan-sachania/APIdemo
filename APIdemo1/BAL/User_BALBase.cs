@@ -33,12 +33,12 @@ namespace APIdemo1.BAL
             }
         }
 
-        public bool DeleteById(int userid)
+        public bool DeleteById(int PersonID)
         {
             try
             {
                 User_DALBase dal = new User_DALBase();
-                if (dal.DeleteById(userid))
+                if (dal.DeleteById(PersonID))
                 {
                     return true;
                 }
@@ -52,6 +52,43 @@ namespace APIdemo1.BAL
                 return false;
             }
         }
+
+        public bool API_PR_INSERT_USER(UserModel userModel)
+        {
+            try
+            {
+                User_DALBase person_DALBase = new User_DALBase();
+                if (person_DALBase.API_PR_INSERT_USER(userModel))
+                    return true;
+                else
+                    return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool API_Person_Update(UserModel userModel)
+        {
+            try
+            {
+                User_DALBase dalperson = new User_DALBase();
+                if (dalperson.API_Person_Update(userModel))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 
 }
